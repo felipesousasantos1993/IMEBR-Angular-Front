@@ -1,0 +1,22 @@
+node {
+    
+	def PROJECT_NAME = "monitor"
+	def GIT_PROJECT_NAME = "darwin/monitor"
+	def S3_BUCKET_NAME = "brasilcap-web-monitor-dev"
+		
+    stage("Construiu"){
+        git credentialsId: "89780d2c-7026-4c5c-bdec-95e0e7674630", url: "http://jenkins@repo-digital/r/${GIT_PROJECT_NAME}.git", branch: "developer"
+		sh "npm install"
+		sh "ng build --env=dev"
+	}
+	
+	stage("Publicou em desenvolvimento"){
+        sh "aws s3 cp dist s3://${S3_BUCKET_NAME}/ --recursive --region sa-east-1"
+    }
+	
+}
+npm install
+rm -rf node_modules .git .vscode
+
+#Habilite quando houver testes
+#istanbul cover _mocha test.js
